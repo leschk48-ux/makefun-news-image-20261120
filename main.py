@@ -22,6 +22,10 @@ def copy_to(directory):
     os.makedirs(directory, exist_ok=True)
     dest = os.path.join(directory, "entry.png")
     shutil.copyfile(SRC, dest)
+    # Guard against a truncated copy: the runner's artifact must be
+    # byte-identical to the source image, so verify the size matches.
+    if os.path.getsize(dest) != os.path.getsize(SRC):
+        raise IOError(f"copy to {dest} is incomplete")
     return dest
 
 
